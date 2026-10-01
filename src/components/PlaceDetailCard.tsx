@@ -58,7 +58,20 @@ export default function PlaceDetailCard({
   };
 
   return (
-    <div className="w-full bg-stone-900/95 border border-stone-700/80 rounded-2xl shadow-2xl backdrop-blur-xl overflow-hidden flex flex-col md:flex-row max-h-[85vh] md:max-h-[500px]">
+    <div className="relative w-full bg-stone-900 border border-stone-700/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[85vh] md:max-h-[520px]">
+      {/* Universal Close Button (Top-Right of Modal, always accessible) */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        className="absolute top-3 right-3 z-40 p-2 bg-stone-950/80 hover:bg-stone-900 text-stone-200 hover:text-white rounded-full border border-white/20 shadow-xl backdrop-blur-md transition-all cursor-pointer hover:scale-105 active:scale-95 group"
+        aria-label="Close details"
+        title="Close modal (Esc)"
+      >
+        <X className="w-4 h-4 stroke-[2.5]" />
+      </button>
+
       {/* Image Preview with Badges */}
       <div className="relative w-full md:w-5/12 h-48 md:h-auto min-h-[190px] shrink-0 overflow-hidden bg-stone-950">
         <img
@@ -74,7 +87,7 @@ export default function PlaceDetailCard({
         <div className="absolute inset-0 bg-gradient-to-t from-stone-900 via-transparent to-black/30 md:bg-gradient-to-r md:from-transparent md:to-stone-900/90" />
 
         {/* Top Badges */}
-        <div className="absolute top-3 left-3 flex flex-wrap items-center gap-2">
+        <div className="absolute top-3 left-3 flex flex-wrap items-center gap-2 pr-12">
           {place.mustVisit && (
             <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-500 text-stone-950 rounded-full font-bold text-xs shadow-lg">
               <Star className="w-3.5 h-3.5 fill-current" />
@@ -93,22 +106,13 @@ export default function PlaceDetailCard({
             <span>{zone.shortName}</span>
           </div>
         )}
-
-        {/* Close Button Mobile */}
-        <button
-          onClick={onClose}
-          className="md:hidden absolute top-3 right-3 p-1.5 bg-black/60 hover:bg-black/80 text-white rounded-full backdrop-blur-md transition-colors"
-          aria-label="Close details"
-        >
-          <X className="w-5 h-5" />
-        </button>
       </div>
 
       {/* Details Container */}
       <div className="flex-1 p-5 md:p-6 flex flex-col justify-between overflow-y-auto">
         <div>
           {/* Header Row */}
-          <div className="flex items-start justify-between gap-4 mb-2">
+          <div className="flex items-start justify-between gap-4 mb-2 pr-8">
             <div>
               <div className="hidden md:flex items-center gap-2 text-xs font-medium text-stone-400 mb-1">
                 {zone && (
@@ -129,22 +133,13 @@ export default function PlaceDetailCard({
               </h2>
             </div>
 
-            <div className="hidden md:flex items-center gap-1.5">
-              <button
-                onClick={handleShare}
-                className="p-2 text-stone-400 hover:text-white hover:bg-stone-800 rounded-lg transition-colors"
-                title="Share spot"
-              >
-                <Share2 className="w-4 h-4" />
-              </button>
-              <button
-                onClick={onClose}
-                className="p-2 text-stone-400 hover:text-white hover:bg-stone-800 rounded-lg transition-colors"
-                aria-label="Close details"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+            <button
+              onClick={handleShare}
+              className="hidden md:flex p-2 text-stone-400 hover:text-white hover:bg-stone-800 rounded-lg transition-colors cursor-pointer shrink-0"
+              title="Share spot"
+            >
+              <Share2 className="w-4 h-4" />
+            </button>
           </div>
 
           {/* Description */}
@@ -251,6 +246,16 @@ export default function PlaceDetailCard({
             >
               <CheckCircle2 className={`w-3.5 h-3.5 ${isVisited ? 'fill-current' : ''}`} />
               <span>{isVisited ? 'Visited' : 'Mark Visited'}</span>
+            </button>
+
+            {/* Close Button */}
+            <button
+              onClick={onClose}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-stone-800 hover:bg-stone-750 text-stone-300 hover:text-white border border-stone-700 transition-colors cursor-pointer"
+              title="Close details (Esc)"
+            >
+              <X className="w-3.5 h-3.5" />
+              <span>Close</span>
             </button>
           </div>
         </div>

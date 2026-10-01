@@ -85,6 +85,17 @@ export default function App() {
     }
   }, [visitedIds]);
 
+  // Close modal when pressing Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedPlace(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   // Toggle Bookmark
   const handleToggleBookmark = (id: string) => {
     setBookmarkedIds((prev) =>
@@ -236,17 +247,27 @@ export default function App() {
           />
         </div>
 
-        {/* Floating Place Detail Card when a pin is selected */}
+        {/* Place Detail Modal Dialog (Proper z-index above map controls, with backdrop click) */}
         {selectedPlace && (
-          <div className="absolute inset-x-3 bottom-16 sm:bottom-16 md:bottom-14 z-[450] max-w-2xl mx-auto transition-all animate-in fade-in slide-in-from-bottom-4 duration-300 pointer-events-auto">
-            <PlaceDetailCard
-              place={selectedPlace}
-              onClose={() => setSelectedPlace(null)}
-              isBookmarked={bookmarkedIds.includes(selectedPlace.id)}
-              isVisited={visitedIds.includes(selectedPlace.id)}
-              onToggleBookmark={handleToggleBookmark}
-              onToggleVisited={handleToggleVisited}
+          <div className="fixed inset-0 z-[700] flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+            {/* Click outside on backdrop to dismiss */}
+            <div
+              className="absolute inset-0 cursor-pointer"
+              onClick={() => setSelectedPlace(null)}
+              aria-label="Close modal backdrop"
             />
+
+            {/* Modal Card */}
+            <div className="relative z-10 w-full max-w-2xl max-h-[90vh] flex flex-col pointer-events-auto">
+              <PlaceDetailCard
+                place={selectedPlace}
+                onClose={() => setSelectedPlace(null)}
+                isBookmarked={bookmarkedIds.includes(selectedPlace.id)}
+                isVisited={visitedIds.includes(selectedPlace.id)}
+                onToggleBookmark={handleToggleBookmark}
+                onToggleVisited={handleToggleVisited}
+              />
+            </div>
           </div>
         )}
 
