@@ -1,0 +1,6 @@
+{
+  "name": "Goa Guide - Interactive Explorer & Route Map",
+  "description": "Interactive Goa map guide featuring color-coded zones, curated beaches, nightlife, cafes, scenic spots, itineraries, and Google Maps directions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
