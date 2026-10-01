@@ -18,6 +18,7 @@ import {
   Compass,
   Info,
   ChevronRight,
+  ChevronLeft,
   Sparkles,
   X,
   Share2,
@@ -35,8 +36,8 @@ interface SidePanelProps {
   visitedIds: string[];
   onToggleBookmark: (id: string) => void;
   onToggleVisited: (id: string) => void;
-  isOpenMobile: boolean;
-  onCloseMobile: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 type TabType = 'places' | 'itineraries' | 'mytrip' | 'tips';
@@ -64,8 +65,8 @@ export default function SidePanel({
   visitedIds,
   onToggleBookmark,
   onToggleVisited,
-  isOpenMobile,
-  onCloseMobile,
+  isOpen,
+  onClose,
 }: SidePanelProps) {
   const [activeTab, setActiveTab] = useState<TabType>('places');
   const [searchQuery, setSearchQuery] = useState('');
@@ -133,33 +134,38 @@ export default function SidePanel({
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 z-[600] w-full sm:w-[420px] bg-stone-900/95 backdrop-blur-xl border-r border-stone-800 flex flex-col transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${
-        isOpenMobile ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+      className={`fixed md:relative inset-y-0 left-0 z-[600] w-full sm:w-[420px] md:w-[390px] lg:w-[420px] shrink-0 bg-stone-900/95 backdrop-blur-xl border-r border-stone-800 flex flex-col transition-all duration-300 ease-in-out ${
+        isOpen
+          ? 'translate-x-0 md:ml-0 shadow-2xl md:shadow-none'
+          : '-translate-x-full md:-ml-[390px] lg:-ml-[420px] pointer-events-none'
       }`}
     >
       {/* Top Header */}
       <div className="p-4 border-b border-stone-800/80 bg-stone-950/40">
         <div className="flex items-center justify-between gap-3 mb-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-teal-500 to-amber-400 flex items-center justify-center shadow-md shadow-teal-500/20">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-teal-500 to-amber-400 flex items-center justify-center shadow-md shadow-teal-500/20 shrink-0">
               <Compass className="w-5 h-5 text-stone-950 stroke-[2.5]" />
             </div>
-            <div>
-              <h1 className="text-base font-extrabold tracking-tight text-white flex items-center gap-1.5">
-                Goa Guide <span className="text-teal-400 font-normal text-xs">· Interactive Map</span>
+            <div className="min-w-0">
+              <h1 className="text-sm font-extrabold tracking-tight text-white flex items-center gap-1.5 truncate">
+                Goa Guide <span className="text-teal-400 font-normal text-xs">· Map</span>
               </h1>
-              <p className="text-[11px] text-stone-400 font-medium">
-                Color-coded zones, curated beaches & cliff routes
+              <p className="text-[10px] text-stone-400 font-medium truncate">
+                Color-coded zones, beaches & routes
               </p>
             </div>
           </div>
 
-          {/* Close for mobile */}
+          {/* Prominent Back Button to close sidebar */}
           <button
-            onClick={onCloseMobile}
-            className="md:hidden p-1.5 text-stone-400 hover:text-white hover:bg-stone-800 rounded-lg transition-colors"
+            onClick={onClose}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 hover:text-white text-xs font-bold border border-stone-700 shadow-sm transition-all cursor-pointer group shrink-0"
+            title="Close sidebar and view map"
+            aria-label="Back to Map"
           >
-            <X className="w-5 h-5" />
+            <ChevronLeft className="w-4 h-4 text-teal-400 group-hover:-translate-x-0.5 transition-transform" />
+            <span>Back</span>
           </button>
         </div>
 

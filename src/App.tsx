@@ -30,7 +30,15 @@ export default function App() {
   const [activeRouteChipId, setActiveRouteChipId] = useState<string | null>(null);
   const [mapTheme, setMapTheme] = useState<MapTheme>('street');
   const [showZones, setShowZones] = useState<boolean>(true);
-  const [isMobilePanelOpen, setIsMobilePanelOpen] = useState<boolean>(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+
+  // Resize listener when sidebar toggles so Leaflet redraws smoothly
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 320);
+    return () => clearTimeout(timer);
+  }, [isSidebarOpen]);
 
   // FlyTo trigger payload
   const [flyToTrigger, setFlyToTrigger] = useState<{
@@ -149,7 +157,16 @@ export default function App() {
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-stone-950 text-stone-100 font-sans">
-      {/* Side Panel (Desktop left, Mobile slide-over) */}
+      {/* Mobile Backdrop when sidebar is open on small screens */}
+      {isSidebarOpen && (
+        <div
+          onClick={() => setIsSidebarOpen(false)}
+          className="md:hidden fixed inset-0 z-[550] bg-black/60 backdrop-blur-xs transition-opacity"
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Side Panel (Collapsible via Back button on both Desktop and Mobile) */}
       <SidePanel
         places={places}
         selectedPlace={selectedPlace}
@@ -162,23 +179,26 @@ export default function App() {
         visitedIds={visitedIds}
         onToggleBookmark={handleToggleBookmark}
         onToggleVisited={handleToggleVisited}
-        isOpenMobile={isMobilePanelOpen}
-        onCloseMobile={() => setIsMobilePanelOpen(false)}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
       />
 
       {/* Main Map View Area */}
       <main className="flex-1 relative flex flex-col h-full overflow-hidden">
         {/* Top Navbar overlay */}
         <header className="absolute top-3 left-3 z-[400] flex items-center gap-2">
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobilePanelOpen(true)}
-            className="md:hidden flex items-center gap-2 px-3 py-2 bg-stone-900/95 hover:bg-stone-800 text-stone-100 rounded-xl shadow-lg border border-stone-700/80 backdrop-blur-md cursor-pointer transition-colors"
-            aria-label="Open Explorer Menu"
-          >
-            <Menu className="w-4 h-4 text-teal-400" />
-            <span className="text-xs font-bold">Goa Guide</span>
-          </button>
+          {/* Reopen Sidebar Button (Visible whenever sidebar is closed) */}
+          {!isSidebarOpen && (
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="flex items-center gap-2 px-3.5 py-2 bg-stone-900/95 hover:bg-stone-800 text-stone-100 rounded-xl shadow-xl border border-stone-700/80 backdrop-blur-md cursor-pointer transition-all hover:scale-105 active:scale-95 group"
+              aria-label="Open sidebar"
+              title="Open Explorer Sidebar"
+            >
+              <Menu className="w-4 h-4 text-teal-400 group-hover:rotate-90 transition-transform" />
+              <span className="text-xs font-bold">Explore Places</span>
+            </button>
+          )}
 
           {/* Quick Stats Pill */}
           <div className="hidden sm:flex items-center gap-3 px-3.5 py-1.5 bg-stone-900/90 border border-stone-700/70 rounded-full backdrop-blur-md shadow-md text-xs">
